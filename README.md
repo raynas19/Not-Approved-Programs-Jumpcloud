@@ -9,3 +9,5 @@ This script will send you an email notification when a not approved application 
 
 
 NOTE - You can edit interval to as slow as 15 minutes as the Jumpcloud agent reports directory insights every 15 minutes. 
+
+Reference - https://docs.jumpcloud.com/api/insights/directory/1.0/index.html
