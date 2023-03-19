@@ -43,12 +43,12 @@ response = requests.post(url, json=payload, headers=headers)
 jc_data = response.json()
 
 # Email Notification
-def send_email_notification(application_name, system_id):
+def send_email_notification(app_name):
     message = MIMEMultipart()
     message["From"] = EMAIL_ADDRESS
     message["To"] = RECIPIENT_EMAIL_ADDRESS
-    message["Subject"] = "New Not Approved Application Installed: " + application_name
-    body = 'Not an approved application: ' + application_name + '\n\n'+ 'Publisher: ' + program_publisher + '\n\n' + 'System ID: ' + system_id + '\n\n' + 'Install Date: ' + program_install_date + '\n\n ' + 'Install Source: ' + program_install_source + '\n'
+    message["Subject"] = "New Not Approved Application Installed: " + app_name + ' on ' + device_name
+    body = 'Not an approved application: ' + '\n\n'+ app_name + '\n\n'+ 'Device Name: ' + device_name + '\n\n'+ 'Publisher: ' + program_publisher + '\n\n' + 'System ID: ' + system_id + '\n\n' + 'Install Date: ' + program_install_date + '\n\n ' + 'Install Source: ' + program_install_source + '\n'
     message.attach(MIMEText(body, "plain"))
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as smtp_server:
         smtp_server.ehlo()
@@ -59,14 +59,16 @@ def send_email_notification(application_name, system_id):
 
 # Loop thought Jumcploud API response
 for log in jc_data:
+    event_type = log['event_type']
     app_name = log['application']['name']
+    device_name = log['system']['hostname']
     program_publisher = log['application']['publisher']
-    program_install_date = log['application']['install_date']
-    program_install_source = log['application']['install_source']
-    system_id = log['application']['system_id']
+    program_install_date = log['timestamp']
+    program_install_source = log['application']['path']
+    system_id = log['id']
 
-    if app_name not in approved_apps:
-        print("Unapproved application installed:", app_name)
-        send_email_notification(application_name, system_id)
-    else:
-        print("Approved application installed:", app_name)
+    if event_type == 'software_add' and app_name not in approved_apps:
+        print("Unapproved application installed:", app_name, system_id)
+        send_email_notification(app_name)
+    #else:
+        #print("Approved application installed:", app_name)
