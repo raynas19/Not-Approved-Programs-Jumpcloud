@@ -2,6 +2,7 @@ import requests
 import json
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
 
 
@@ -10,7 +11,7 @@ SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 EMAIL_ADDRESS = 'X’
 EMAIL_PASSWORD = 'X'
-RECIPIENT_EMAIL = 'X'
+RECIPIENT_EMAIL_ADDRESS = 'X'
 
 # API Endpoint
 url = "https://api.jumpcloud.com/insights/directory/v1/events"
